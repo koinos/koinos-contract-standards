@@ -26,7 +26,7 @@ In order to move to Final status the proposer should be able to point to an actu
 
 ## Formatting a Standard
 
-You can find a template [here](https://template_link)
+You can find a template [here](kcs-template.md)
 
 At a minimum, your standard should include these things:
 
