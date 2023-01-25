@@ -111,14 +111,14 @@ Updates the approval for transfer of the collection contract to a new owner
 
 With our proposed implementation you would set the following constants before uploading your contract:
 
--`NAME` - a string for the name of the collection
--`SYMBOL` - a string for the symbol used for this collection
--`PRICE` - a u64 for the initial price (can be zero)
--`URI` - a string that contains the metadata URI
--`OWNER` - A Base58 decoded Unit8Array which is the address of the initial contract owner
--`FEE_MINT` - a boolean (true/false). If set, there will be a set fee for minting new NFTs in this collection
--`TOKEN_PAY` - if `FEE_MINT` is true, this is the address where the mint fee will be sent
--`ADDRESS_PAY` - if `FEE_MINT` is true, this is who will pay the mana for the mint event
+- `NAME` - a string for the name of the collection
+- `SYMBOL` - a string for the symbol used for this collection
+- `PRICE` - a u64 for the initial price (can be zero)
+- `URI` - a string that contains the metadata URI
+- `OWNER` - A Base58 decoded Unit8Array which is the address of the initial contract owner
+- `FEE_MINT` - a boolean (true/false). If set, there will be a set fee for minting new NFTs in this collection
+- `TOKEN_PAY` - if `FEE_MINT` is true, this is the address where the mint fee will be sent
+- `ADDRESS_PAY` - if `FEE_MINT` is true, this is who will pay the mana for the mint event
 
 ## Where to find and how to use
 
