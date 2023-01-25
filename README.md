@@ -18,7 +18,7 @@ Developers can launch any smart contract on the Koinos blockchain whether they f
 
 Before submitting a standard you should thoroughly discuss it with other Koinos developers either on the [Koinos discord]() or on the [Koinos forum](https://discourse.koinosforum.com/).
 
-Once you believe that your idea for a standard is sound and should be proposed, next you should write a draft describing the standard using markdown. Open an issue in this repo with simply the title of the standard. The GitHub issue number will become the KCS number (ex. KCS-1). The file name should be in a format like: `kcs-1.md` which includes the GitHub issue number. Open a pull request that will close the issue number. Public discussions can continue on the issue number whether it's in Draft or Final status.
+Once you believe that your idea for a standard is sound and should be proposed, next you should write a draft describing the standard using markdown. Open an issue in this repo with simply the title of the standard. The number issued should be in order of proposals merged. The file name should be in a format like: `kcs-1.md` which includes the next available number for a standard. Open a pull request that will close your open issue. Public discussions can continue on the GitHub issue whether it's open, merged as Draft or in Final status.
 
 If a standard submitted is filled out in the proper format, it should be merged as a Draft standard.
 
@@ -51,3 +51,7 @@ Provide a complete technical specification for your smart contract standard that
 ### Optional
 
 You are welcome to include any additional information describing your proposed standard. Some of these could include information about backwards compatibility with previous standards, security considerations, links to reference implementation, and anything else you deem necessary.
+
+### References
+
+Include any references or links to resources you used that your specification may be based on (if any).
