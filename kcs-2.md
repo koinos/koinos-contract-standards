@@ -65,11 +65,11 @@ This method gets the current total supply of a collection.
 
 ### royalties
 
-This method returns the amount of royalites.
+This method returns the amount of royalites (if any).
 
 ### set_royalties
 
-This method allows the contract owner to set royalties. The max allowed is 10%.
+This method allows the contract owner to set royalties (optional). The max allowed is 10% in our implementation.
 
 ### owner
 
