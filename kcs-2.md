@@ -12,7 +12,7 @@ A token contract standard for NFT collections on the Koinos blockchain.
 
 This standard is to define how NFT collections can work on the Koinos blockchain. The functionality is setup to closely mimic the [ERC-721](https://eips.ethereum.org/EIPS/eip-721) standard on Ethereum. We believe that NFTs on Ethereum have become a common standard and our goal is to provide similar functionality here for users and developers who have come to expect this basic layer of functionality.
 
-NFTs using this standard may include additional utility and functionality beyond this standard. This is just the base layer of funtionality that is expected.
+NFTs using this standard may include additional utility and functionality beyond this standard. This is just the base layer of functionality that is expected.
 
 ## Why
 
@@ -65,7 +65,7 @@ This method gets the current total supply of a collection.
 
 ### royalties
 
-This method returns the amount of royalites (if any).
+This method returns the amount of royalties (if any).
 
 ### set_royalties
 
@@ -122,7 +122,7 @@ With our proposed implementation you would set the following constants before up
 
 ## Where to find and how to use
 
-There is a reference implementation for launching a NFT collection following this standard [available here](https://github.com/kollection-nft/collection-base). It uses the AssemblyScript SDK which you can read more about [here](https://docs.koinos.io/quickstart/contract-developer-guide.html) in the offical Koinos smart contract developer documentation.
+There is a reference implementation for launching a NFT collection following this standard [available here](https://github.com/kollection-nft/collection-base). It uses the AssemblyScript SDK which you can read more about [here](https://docs.koinos.io/quickstart/contract-developer-guide.html) in the official Koinos smart contract developer documentation.
 
 ## References
 
