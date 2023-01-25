@@ -51,3 +51,7 @@ Provide a complete technical specification for your smart contract standard that
 ### Optional
 
 You are welcome to include any additional information describing your proposed standard. Some of these could include information about backwards compatibility with previous standards, security considerations, links to reference implementation, and anything else you deem necessary.
+
+### References
+
+Include any references or links to resources you used that your specification may be based on (if any).

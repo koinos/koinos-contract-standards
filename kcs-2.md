@@ -123,3 +123,7 @@ With our proposed implementation you would set the following constants before up
 ## Where to find and how to use
 
 There is a reference implementation for launching a NFT collection following this standard [available here](https://github.com/kollection-nft/collection-base). It uses the AssemblyScript SDK which you can read more about [here](https://docs.koinos.io/quickstart/contract-developer-guide.html) in the offical Koinos smart contract developer documentation.
+
+## References
+
+Our implementation is built and extended based on the original example from [Roamin](https://github.com/roaminro)'s NFT example contract [located here](https://github.com/roaminro/koinos-sdk-as-examples/tree/main/nft). Thanks Roamin!
