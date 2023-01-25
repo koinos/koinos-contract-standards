@@ -1,5 +1,4 @@
 ---
-KCS: 1
 title: NFT Collection Standard
 description: A token contract standard for NFT collections
 authors: [Ederlang](https://github.com/ederaleng), [Von Looten](https://github.com/vonlooten), [Justin W](https://github.com/jredbeard), [Dokterkraakbeen](https://github.com/Dokterkraakbeen)
