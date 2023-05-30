@@ -22,9 +22,9 @@ Further, by setting forth a standard for NFT collections developers can be sure 
 
 ## Why the concept of "owner"?
 
-On Koinos contracts can be either upgradeable or immutable. A contract address is also a standard wallet address. These are differences that make our implementation slightly different from ERC-721.
+On Koinos contracts can be either upgradeable or immutable. A contract address is also a standard wallet address. This default behavior on Koinos is different than Ethereum and ERC-721 contracts.
 
-By default, the wallet that can make changes to a contract is the address that uploaded the contract. If a contract is set to immutable (by blocking authorities) then the wallet used to upload the contract can no longer make changes. In our implementation of KCS-2 there is the concept of an "owner" address and the ability to transfer that ownership. That means that a collection owner could transfer the ownership of the collection to another individual or organization even if the contract is set to be immutable. This is a concept that is built-in to Ethereum for contracts, but, is "unnecessary" to be default behavior on Koinos because standard wallet addresses can be contract addresses.
+By default, the wallet that can make changes to a contract is the address that uploaded the contract. If a contract is set to immutable (by blocking authorities) then the wallet used to upload the contract can no longer make changes. In our implementation of KCS-2 there is the concept of an "owner" address and the ability to transfer that ownership. That means that a collection owner could transfer the ownership of the collection to another individual or organization even if the contract is set to be immutable. Even though this is "unnecessary" to be default behavior on Koinos because standard wallet addresses can be contract addresses it's useful to understand why the concept of `owner` is used here.
 
 In addition to having the ability to transfer ownership, having an `owner` means that front-ends can verify the collection owner in order to set certain things like off-chain metadata for a collection (YouTube link, Discord, etc).
 
