@@ -148,7 +148,7 @@ message mint_args {
 
 ### transfer
 
-This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call.
+This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
 ```ts
 // entry_point: 0x27f576ca
@@ -169,7 +169,7 @@ message transfer_args {
 
 ### burn (optional)
 
-Burns an amount of token from an address. The authorization is checked with the native `check_authority` system call.
+Burns an amount of token from an address. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
 ```ts
 // entry_point: 0x859facc5
@@ -197,7 +197,7 @@ With the proposed implementation developers would set the following constants be
 
 ## Check authority system call
 
-The koinos framework comes with a _system call_ called `check_authority` which is used during the transfers and burns in order to verify if the user has authorized the transaction. It works in this way:
+The koinos framework comes with an innovative system for authorizations, where users can upload personal contracts that will be called to resolve authorizations. In order to take advantage of this feature, the token contract should call the `check_authority` system call. And it works in this way:
 
 1. If the user has a smart contract, and he has configured it with an `authorize` function, then this smart contract will be called to resolve the authority.
 2. If the user doesn't have a smart contract, then the blockchain will search if the user signed the transaction and in that case approve the authorization.
@@ -217,12 +217,12 @@ flowchart TD
 
 ## Implementation
 
-There are already a handful of KCS-1 compliant tokens deployed on the Koinos network of nodes. They can be found at [KoinDX](https://app.koindx.com/swap) or [Koiner.app](https://koiner.app/). While their methods can be read/written through Koinos blockchain explorers like [KoinosBlocks](https://koinosblocks.com/) or directly through the [Koinos-CLI](https://github.com/koinos/koinos-cli).
+There are some implementations of this token contract.
 
-## Where to find and how to use
-
-There is a reference implementation for launching a token following this standard [available here](https://github.com/roaminro/koinos-sdk-as-examples/tree/main/token). It uses the AssemblyScript SDK which you can read more about [here](https://docs.koinos.io/quickstart/contract-developer-guide/) in the official Koinos smart contract developer documentation. There is also a module at [Learn Koinos](https://learnkoinos.xyz/docs/modules/) that covers Koinos developer environment set-up and token deployment to this standard.
+- [Token contract](https://github.com/roaminro/koinos-sdk-as-examples/blob/4e68844d41a53bcf1f5a43056d9a638b544d816c/token/assembly/Token.ts)
+- [KOIN token](https://github.com/koinos/koinos-contracts-cpp/blob/80f55538a5fbf6526e2e1df93d9bf4981eb6c2e7/contracts/koin/koin.cpp) (written in C++)
+- [VHP Token](https://github.com/koinos/koinos-contracts-as/blob/213277bc9c54dd049d7797a657dac890e8207560/contracts/vhp/assembly/Vhp.ts)
 
 ## References
 
-This implementation is built and extended based on the original example from [Roamin](https://github.com/roaminro)'s token contract [located here](https://github.com/roaminro/koinos-sdk-as-examples/tree/main/token).
+- [Koinos authority system explained by Michael Vandeberg (video)](https://www.youtube.com/watch?v=lDsAQ7y9XTw).
