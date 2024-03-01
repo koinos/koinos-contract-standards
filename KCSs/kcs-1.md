@@ -2,61 +2,23 @@
 KCS: 1
 title: Token Standard
 description: A standard interface for tokens
-authors: q t, otherfolks <https://github.com/otherfolks>
-status: Draft
+authors: [Koinos Group](https://github.com/koinos)
+status: Final
 ---
 
 A contract standard for tokens on the Koinos blockchain.
 
 ## Long Description
 
-This standard is to define how tokens can work on the Koinos blockchain. The functionality is setup to closely mimic the [ERC-20](https://eips.ethereum.org/EIPS/eip-20) standard on Ethereum. Tokens on Ethereum have become a common standard and our goal is to provide similar functionality here for Koinos users and developers who have come to expect this basic layer of functionality in a token contract.
+This standard is to define how tokens can work on the Koinos blockchain.
 
 Tokens using this standard may include additional utility and functionality beyond this standard in their smart contracting. This is only a base layer of functionality that is expected.
 
 ## Why
 
-By mimicking the Ethereum token standard this makes it easy to onboard tokens who may have already launched projects on other chains. Many tools and resources already available for working with tokens will already be compatible here and easy to implement on Koinos.
-
-Further, by setting forth a standard for Koinos tokens, developers can be sure that token exchanges (including [KoinDX](https://app.koindx.com)) will be able to aggregate and display these tokens as intended.
+This is the first standard for token contracts in koinos blockchain. The most representative examples are KOIN and VHP contracts.
 
 ## Specification
-
-The token contract use the following proto messages:
-
-```proto
-message balance_of_args {
-   bytes owner = 1 [(koinos.btype) = ADDRESS];
-}
-
-message transfer_args {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
-   uint64 value = 3 [jstype = JS_STRING];
-}
-
-message mint_args {
-   bytes to = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
-}
-
-message burn_args {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
-}
-
-message str {
-   string value = 1;
-}
-
-message uint32 {
-   uint32 value = 1;
-}
-
-message uint64 {
-   uint64 value = 1 [jstype = JS_STRING];
-}
-```
 
 At a minimum, a token contract using this standard will include the following methods and unique data:
 
@@ -232,6 +194,26 @@ With the proposed implementation developers would set the following constants be
 - `NAME` - a string for the human readable name of the token.
 - `SYMBOL` - a string for the symbol or ticker used for the token (all uppercase).
 - `DECIMALS` - a u32 for the decimal precision of the token.
+
+## Check authority system call
+
+The koinos framework comes with a _system call_ called `check_authority` which is used during the transfers and burns in order to verify if the user has authorized the transaction. It works in this way:
+
+1. If the user has a smart contract, and he has configured it with an `authorize` function, then this smart contract will be called to resolve the authority.
+2. If the user doesn't have a smart contract, then the blockchain will search if the user signed the transaction and in that case approve the authorization.
+
+This is a flow chart of the system call:
+
+```mermaid
+flowchart TD
+    ini[TOKEN CONTRACT\nTransfer from Alice to Bob] -->|Does Alice authorize\n this operation?| A
+    A[check_authority\nsystem call] --> B
+    B{Has Alice a\n contract for\n authorizations?} -->|YES\nDo you authorize\nthis operation?| C
+    C["Call Alice's contract"] -->|true/false| D
+    B --> |NO| E
+    E{Transaction signed\nby Alice?} --> |YES\ntrue|D
+    E --> |NO\nfalse|D[Return response to\n TOKEN CONTRACT]
+```
 
 ## Implementation
 
