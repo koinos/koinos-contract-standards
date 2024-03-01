@@ -2,7 +2,7 @@
 KCS: 1
 title: Token Standard
 description: A standard interface for tokens
-authors: [Koinos Group](https://github.com/koinos)
+authors: Koinos Group (https://github.com/koinos)
 status: Final
 ---
 
