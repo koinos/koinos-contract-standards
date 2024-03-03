@@ -2,7 +2,7 @@
 KCS: 1
 title: Token Standard
 description: A standard interface for tokens
-authors: Koinos Group (https://github.com/koinos)
+authors: Koinos Group (https://github.com/koinos), Julián González (https://github.com/joticajulian)
 status: Final
 ---
 
@@ -29,8 +29,6 @@ At a minimum, a token contract using this standard will include the following me
 Returns the name of the token. No arguments required.
 
 ```ts
-// entry_point: 0x82a3537f
-// read_only: true
 name(): token.str {}
 ```
 
@@ -48,8 +46,6 @@ message str {
 Returns the symbol for the token. No arguments required.
 
 ```ts
-// entry_point: 0xb76a7ca1
-// read_only: true
 symbol(): token.str {}
 ```
 
@@ -67,8 +63,6 @@ message str {
 Returns the decimal precision of the token. No arguments required.
 
 ```ts
-// entry_point: 0xee80fd2f
-// read_only: true
 decimals(): token.uint32 {}
 ```
 
@@ -86,8 +80,6 @@ message uint32 {
 Returns the total supply of the token. No arguments required.
 
 ```ts
-// entry_point: 0xb0da3934
-// read_only: true
 total_supply(): token.uint64 {}
 ```
 
@@ -105,8 +97,6 @@ message uint64 {
 Returns how many tokens a specific address holds.
 
 ```ts
-// entry_point: 0x5c721497
-// read_only: true
 balance_of(args: token.balance_of_args): token.uint64 {}
 ```
 
@@ -131,8 +121,6 @@ message uint64 {
 Used by the contract owner to initially mint the token to a given address.
 
 ```ts
-// entry_point: 0xdc6f17bb
-// read_only: false
 mint(args: token.mint_args): void {}
 ```
 
@@ -151,8 +139,6 @@ message mint_args {
 This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
 ```ts
-// entry_point: 0x27f576ca
-// read_only: false
 transfer(args: token.transfer_args): void {}
 ```
 
@@ -172,8 +158,6 @@ message transfer_args {
 Burns an amount of token from an address. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
 ```ts
-// entry_point: 0x859facc5
-// read_only: false
 burn(args: token.transfer_args): void {}
 ```
 
@@ -186,6 +170,18 @@ message burn_args {
    uint64 value = 2 [jstype = JS_STRING];
 }
 ```
+
+## Computation of entry points
+
+On koinos blockchain, each contract function has an _entry point_ associtated which should be referenced inside the transaction when interacting with the contract. This _entry point_ is used to identify the function, not the name of the function.
+
+The current standard uses the following process to define the entry point:
+
+1. Compute the sha256 of the name function.
+2. Take the first 4 bytes of the hash.
+3. Convert these bytes into a number.
+
+For instance, the sha256 of `transfer` is `27f576cafbb263ed44be8bd094f66114da26877706f96c4c31d5a97ffebf2e29`. Then the _entry point_ for this function is defined as 0x27f576ca
 
 ## Expected Unique Data and Types
 
