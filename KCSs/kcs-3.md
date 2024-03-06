@@ -2,7 +2,7 @@
 KCS: 3
 title: Token Standard that mimics ERC-20
 description: A standard interface for tokens
-authors: [Julián González](https://github.com/joticajulian)
+authors: Julián González (https://github.com/joticajulian)
 status: Final
 ---
 
