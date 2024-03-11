@@ -106,6 +106,7 @@ message info {
    string name = 1;
    string symbol = 2;
    uint32 decimals = 3;
+   string description = 4;
 };
 ```
 
@@ -204,7 +205,7 @@ message get_allowances_return {
 
 ### Write methods
 
-### approve
+#### approve
 
 Grant permissions to other account to manage the tokens owned by the user.
 
@@ -223,7 +224,7 @@ message approve_args {
 }
 ```
 
-### mint
+#### mint
 
 Used by the contract owner to initially mint the token to a given address.
 
@@ -241,7 +242,7 @@ message mint_args {
 }
 ```
 
-### transfer
+#### transfer
 
 This will transfer tokens to a new owner. The authorization is checked using allowances and/or smart wallets as explained above.
 
@@ -261,12 +262,12 @@ message transfer_args {
 }
 ```
 
-### burn (optional)
+#### burn (optional)
 
 Burns an amount of token from an address. The authorization is checked using allowances and/or smart wallets as explained above.
 
 ```ts
-burn(args: token.transfer_args): void {}
+burn(args: token.burn_args): void {}
 ```
 
 Protobuffers:

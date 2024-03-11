@@ -116,7 +116,7 @@ message uint64 {
 
 ### Write methods
 
-### mint
+#### mint
 
 Used by the contract owner to initially mint the token to a given address.
 
@@ -134,7 +134,7 @@ message mint_args {
 }
 ```
 
-### transfer
+#### transfer
 
 This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
@@ -153,12 +153,12 @@ message transfer_args {
 }
 ```
 
-### burn (optional)
+#### burn (optional)
 
 Burns an amount of token from an address. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
 
 ```ts
-burn(args: token.transfer_args): void {}
+burn(args: token.burn_args): void {}
 ```
 
 Protobuffers:
