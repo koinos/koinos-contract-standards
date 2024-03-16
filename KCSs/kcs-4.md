@@ -183,17 +183,12 @@ get_allowances(args: token.get_allowances_args): token.get_allowances_return {}
 Protobuffers:
 
 ```proto
-enum direction {
-   ascending = 0;
-   descending = 1;
-}
-
 // Arguments
 message get_allowances_args {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes start = 2 [(koinos.btype) = ADDRESS];
    int32 limit = 3;
-   direction direction = 4;
+   bool descending = 4;
 }
 
 // Return
@@ -258,7 +253,7 @@ message transfer_args {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
-   string memo = 100;
+   string memo = 4;
 }
 ```
 

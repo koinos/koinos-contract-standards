@@ -247,16 +247,11 @@ get_tokens(args: nft.get_tokens_args): nft.token_ids {}
 Protobuffers:
 
 ```proto
-enum direction {
-   ascending = 0;
-   descending = 1;
-}
-
 // Arguments
 message get_tokens_args {
    bytes start = 1 [(koinos.btype) = HEX];
    int32 limit = 2;
-   direction direction = 3;
+   bool descending = 3;
 }
 
 // Return
@@ -276,17 +271,12 @@ get_tokens_by_owner(args: nft.get_tokens_by_owner_args): nft.token_ids {}
 Protobuffers:
 
 ```proto
-enum direction {
-   ascending = 0;
-   descending = 1;
-}
-
 // Arguments
 message get_tokens_by_owner_args {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes start = 2 [(koinos.btype) = HEX];
    int32 limit = 3;
-   direction direction = 4;
+   bool descending = 4;
 }
 
 // Return
@@ -353,17 +343,12 @@ get_operator_approvals(
 Protobuffers:
 
 ```proto
-enum direction {
-   ascending = 0;
-   descending = 1;
-}
-
 // Arguments
 message get_operators_args {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes start = 2 [(koinos.btype) = ADDRESS];
    int32 limit = 3;
-   direction direction = 4;
+   bool descending = 4;
 }
 
 // Return
@@ -504,7 +489,7 @@ message transfer_args {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   string memo = 100;
+   string memo = 4;
 }
 ```
 
