@@ -291,6 +291,17 @@ message approve_args {
 message approve_result {}
 ```
 
+The method should emit an `approve_event` upon success. The event should indicate the spender and then the owner as the impacted accounts.
+
+```proto
+// Event
+message approve_event {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes spender = 2 [(koinos.btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+}
+```
+
 ## Expected Unique Data and Types
 
 With the proposed implementation developers would set the following constants before uploading their token contract:
