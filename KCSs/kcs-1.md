@@ -154,7 +154,7 @@ message transfer_args {
 message transfer_result {}
 ```
 
-The transfer event should emit a `token_transfer` event upon success. The event should indicate the sender and receiver as impacted accounts.
+The transfer event should emit a `transfer_event` upon success. The event should indicate the sender and receiver as impacted accounts.
 
 ```proto
 // Event
