@@ -124,7 +124,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message get_info_args {}
+message get_info_arguments {}
 // Result
 message get_info_result {
    string name = 1;
@@ -141,7 +141,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message allowance_args {
+message allowance_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes spender = 2 [(koinos.btype) = ADDRESS];
 }
@@ -169,7 +169,7 @@ message spender_value {
 }
 
 // Arguments
-message get_allowances_args {
+message get_allowances_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes start = 2 [(koinos.btype) = ADDRESS];
    int32 limit = 3;
@@ -249,7 +249,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message burn_args {
+message burn_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
@@ -275,7 +275,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message approve_args {
+message approve_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes spender = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];

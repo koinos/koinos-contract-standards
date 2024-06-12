@@ -173,7 +173,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message burn_args {
+message burn_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
