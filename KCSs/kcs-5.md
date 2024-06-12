@@ -3,7 +3,7 @@ KCS: 5
 title: NFT Standard that mimics ERC-721 and supports Koinos authority system
 description: A standard interface for NFTs
 authors: Julián González (https://github.com/joticajulian)
-status: Final
+status: Pending
 ---
 
 A contract standard for NFT collections on the Koinos blockchain.
@@ -47,15 +47,13 @@ At a minimum, a NFT contract using this standard will include the following meth
 
 Returns the name of the NFT. No arguments required.
 
-```ts
-name(): nft.str {}
-```
-
 Protobuf definition:
 
 ```proto
-// Return
-message str {
+// Arguments
+message name_arguments {}
+// Result
+message name_result {
    string value = 1;
 }
 ```
@@ -69,7 +67,7 @@ Protobuf definition:
 ```proto
 // Arguments
 message symbol_arguments {}
-// result
+// Result
 message symbol_result {
    string value = 1;
 }
@@ -78,10 +76,6 @@ message symbol_result {
 #### uri
 
 Returns the endpoint to resolve the metadata. If the uri is empty then the metadata should be searched onchain by using the method `metadata_of`.
-
-```ts
-uri(): nft.str {}
-```
 
 Protobuf definition:
 
