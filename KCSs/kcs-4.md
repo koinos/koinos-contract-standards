@@ -223,6 +223,7 @@ message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
 }
 // Result
 message transfer_result {}
@@ -236,6 +237,7 @@ message transfer_event {
    bytes from = 1 [(btype) = ADDRESS];
    bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
 }
 ```
 
