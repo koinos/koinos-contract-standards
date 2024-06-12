@@ -3,7 +3,7 @@ KCS: 4
 title: Token Standard that mimics ERC-20 and supports Koinos authority system
 description: A standard interface for tokens
 authors: Julián González (https://github.com/joticajulian)
-status: Final
+status: Pending
 ---
 
 A contract standard for tokens on the Koinos blockchain.
