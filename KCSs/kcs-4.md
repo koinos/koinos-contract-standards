@@ -219,7 +219,7 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message transfer_args {
+message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
