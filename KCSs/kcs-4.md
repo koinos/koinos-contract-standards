@@ -1,46 +1,37 @@
 ---
-KCS: 3
-title: Token Standard that mimics ERC-20
+KCS: 4
+title: Token Standard that mimics ERC-20 and supports Koinos authority system
 description: A standard interface for tokens
 authors: Julián González (https://github.com/joticajulian)
-status: Final
+status: Pending
 ---
 
 A contract standard for tokens on the Koinos blockchain.
 
 ## Long Description
 
-This standard is to define how tokens can work on the Koinos blockchain. The functionality is setup to closely mimic the [ERC-20](https://eips.ethereum.org/EIPS/eip-20) standard on Ethereum. Tokens on Ethereum have become a common standard and our goal is to provide similar functionality here for Koinos users and developers who have come to expect this basic layer of functionality in a token contract.
-
-Tokens using this standard may include additional utility and functionality beyond this standard in their smart contracting. This is only a base layer of functionality that is expected.
+This standard is to define how tokens can work on the Koinos blockchain. The functionality is setup to closely mimic the [ERC-20](https://eips.ethereum.org/EIPS/eip-20) standard on Ethereum. At the same time, it supports the Koinos authority system, which is useful for smart wallets.
 
 ## Why
 
-The KCS-1 token standard is a good solution for smart wallets but it puts in risks the normal accounts (typical accounts without a contract linked to them) because there are no allowances.
+This standard takes the best of the token standards KCS-1 and KCS-3. On one hand, the KCS-1 is useful for smart wallets by using the Koinos authority system, however it puts in risk the normal accounts. On the other hand, the KCS-3 resolves the risks of normal accounts but it ignores the Koinos authority system.
 
-Let's see an example:
-- Alice interacts with a scam contract.
-- In the popup to sign the transaction she only sees the operation of this contract: get_airdrop(). She signs the transaction and broadcast it to the blockchain.
-- Now this contract is called.
-- The scam contract now calls the KOIN contract requesting a transfer of all funds from Alice.
-- The KOIN contract is called.
-- The KOIN contract calls the `check_authority` system call to verify if Alice has approved this operation.
-- Alice doesn't have a smart contract to resolve authorizations then the blockchain checks the signatures.
-- As the transaction is signed by Alice then the KOIN transfer is accepted, causing as a result the execution of the scam.
+The difficulty of merging both standards is because before 2024-02-12 there was not possible to classify accounts by type (smart wallets / normal accounts) inside the token contract. But now this is possible thanks to `get_contract_metadata` system call, then the KCS-4 token standard have allowances to put normal accounts in safe place and supports the Koinos authority system for smart wallets.
 
-The KCS-1 contains a section explaining the authorization process and functionality of `check_authority`. The problem with this system call is that it is useful only for accounts that have smart wallets to resolve authorizations, but normal accounts are in risk and people should not interact with contracts they don't trust because the popup to sign the transaction will not be able to alert them what will happen behind the scenes (the blockchain also has the `broadcast:false` option to be able to check events without broadcasting the transaction, but this option has also security risks not covered in this article).
+## Allowance and check authority
 
-Take into account that we just mentioned the KOIN contract in the example, but the scam could call all assets at the same time (tokens using KCS-1 standard) and steal them all.
+The function to verify authorizations is extended in this way:
 
-## How this is solved on ethereum?
+1. Check if the caller of the operation is allowed to do it by checking the allowances.
+2. If the contract caller is the owner of the tokens then the operation is accepted.
+3. If there is a contract caller AND the owner doesn't have a contract to resolve authorizations then the operation is rejected.
+4. If the points above do not apply then use the native check authority function:
+  a. If the owner has a smart contract to resolve authorizations then call it.
+  b. If the owner does not have a smart contract then check if the trasaction is signed by the owner.
 
-The [ERC-20 token](https://eips.ethereum.org/EIPS/eip-20) from ethereum solves this by the introduction of allowances. Following the previous example, Alice must approve the transfer before calling the scam contract. In simple terms, the popup to sign the transaction will show to Alice that she is authorizing a `spender` to transfer her tokens. In this way she will know in advance what actions are permitted during the execution of the transaction.
+Consider the case where the owner uses a normal account (not smart wallet). If he interacts directly with the token contract then the signature will be validated (point 4.b). If he interacts with a DEX and the DEX makes a transfer in name of the owner then the allowance will be validated (point 1), otherwise it will be rejected (point 3). In this way allowances protect the assets of the users, because they have to set them in advance before a third contract tries to execute a transfer.
 
-## What changes between KCS-1 and KCS-3?
-
-KCS-3 introduces allowances. At the same time the `check_authority` system call is not used anymore. As consecuence, if the user has a smart wallet to resolve authorizations it will not be called. If the user wants to use smart wallets then the smart wallet should call the token contract in order to set the allowance.
-
-For reference, the KCS-4 token standard resolves the security risks mentioned here and takes back the `check_authority` to be able to use smart wallets to resolve authorizations, but for the present KCS-3 standard this option is removed.
+Now consider the case where the owner has a smart wallet. Consider also that he does not set any allowance in the token contract. If he interacts directly with the token contract then the smart wallet will be called (point 4.a). If he interacts with a DEX and the DEX makes a transfer in name of the owner then the smart wallet will be called as well (point 4.a). This means that the token contract supports the Koinos authority system, which is useful for smart wallets.
 
 ## Specification
 
@@ -232,6 +223,7 @@ message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
 }
 // Result
 message transfer_result {}
@@ -245,6 +237,7 @@ message transfer_event {
    bytes from = 1 [(btype) = ADDRESS];
    bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
 }
 ```
 
@@ -314,8 +307,9 @@ With the proposed implementation developers would set the following constants be
 
 The implementation of this token contract can be found at:
 
-- [Token contract v1.0.3 - @koinosbox/contracts@v1.2.4](https://github.com/joticajulian/koinos-contracts-as/blob/v1.2.4/contracts/token/assembly/Token.ts).
+- [Token contract v1.0.2 - @koinosbox/contracts@v2.0.2](https://github.com/joticajulian/koinos-contracts-as/blob/v2.0.2/contracts/token/assembly/Token.ts) (check also latest updates).
 
 ## References
 
-- [Improve security in koinos (by @jga)](https://peakd.com/koinos/@jga/improve-security-koinos).
+- [New system call in koinos - part1 (by @jga)](https://peakd.com/koinos/@jga/check-authority-2-testnet).
+- [New system call in koinos - part2 (by @jga)](https://peakd.com/koinos/@jga/new-koinos-system-call-live-in-the-testnet)
