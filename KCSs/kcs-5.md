@@ -318,6 +318,15 @@ message transfer_ownership_arguments {
 message transfer_ownership_result {}
 ```
 
+The method should emit `owner_event` upon success with the name `collections.owner_event`. The event should indicate the new owner and then the previous owner as impacted accounts.
+
+```proto
+// Event
+message owner_event {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+```
+
 #### set_royalties
 
 Function to set the royalties. Only the owner of the collection can perform this operation.
@@ -337,6 +346,15 @@ message set_royalties_argument {
 message set_royalties_result {}
 ```
 
+The method should emit `royalties_event` upon success with the name `collections.royalties_event`. The event should indicate the addresses of the royalties as impacted accounts.
+
+```proto
+// Event
+message royalties_event {
+   repeated royalty value = 1;
+}
+```
+
 #### set_metadata
 
 Function to set the metadata of the tokens. It should be a JSON converted to string.
@@ -351,6 +369,16 @@ message set_metadata_arguments {
 }
 // Result
 message set_metadata_result {}
+```
+
+The method should emit `set_metadata_event` upon success with the name `collections.set_metadata_event`. The event should indicate the source as an impacted account.
+
+```proto
+// Event
+message set_metadata_event {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+   string metadata = 2;
+}
 ```
 
 #### approve
@@ -368,6 +396,17 @@ message approve_arguments {
 }
 // Result
 message approve_result {}
+```
+
+The method should emit `token_approval_event` upon success with the name `collections.token_approval_event`. The event should indicate the approved address and then the approver address as impacted accounts.
+
+```proto
+// Event
+message token_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+}
 ```
 
 #### set_approval_for_all
@@ -388,6 +427,17 @@ message set_approval_for_all_arguments {
 message set_approval_for_all_result {}
 ```
 
+The method should emit `operator_approval_event` upon success with the name `collections.operator_approval_event`. The event should indicate the operator address and then the approver address as impacted accounts.
+
+```proto
+// Event
+message operator_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bool approved = 3;
+}
+```
+
 #### mint
 
 Used by the contract owner to initially mint the NFT to a given address.
@@ -402,6 +452,16 @@ message mint_arguments {
 }
 // Result
 message mint_result {}
+```
+
+The method should emit `mint_event` upon success with the name `collections.mint_event`. The event should indicate the recipient of the mint as an impacted account.
+
+```proto
+// Event
+message mint_event {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
+}
 ```
 
 #### transfer
@@ -421,6 +481,18 @@ message transfer_arguments {
 message transfer_result {}
 ```
 
+The method should emit `transfer_event` upon success with the name `collections.transfer_event`. The event should indicate the receiver and then the sender as impacted accounts.
+
+```proto
+// Event
+message transfer_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+   string memo = 4;
+}
+```
+
 ### burn (optional)
 
 Burns an amount of NFT from an address. The authorization is checked using allowances and/or smart wallets as explained above.
@@ -434,6 +506,15 @@ message burn_arguments {
 }
 // Result
 message burn_result {}
+```
+
+The method should emit `burn_event` upon success with the name `collections.burn_event`. The event should indicate the previous owner as an impacted account.
+
+```proto
+// Event
+message burn_event {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+}
 ```
 
 ## Expected Unique Data and Types
