@@ -19,7 +19,7 @@ This standard introduces new features with respect to the standard KCS-2. Here i
 1. **Possibility to store metadata onchain**. When the `uri` is defined then the metadata is stored offchain. However, if the `uri` is undefined is because the metadata should be obtained from the contract itself, onchain. Thanks to this option, the developers don't have to setup an API for the contract.
 2. **Function to get a paginated list of NFTs**. One of the main barriers of the ERC-721 and KCS-2 is that it's not possible know what is the list of NFTs in the collection, unless you setup a microservice that listen changes in the contract, or you rely in third parties offering this functionality.
 3. **Function to get NFTs by owner**. Same feature as the previous one but filtered by owner.
-4. **Function to list approvals**. This feauture allows users to know what are the approvals they have set to third parties. In this sense, they will have more control on their assets.
+4. **Function to list approvals**. This feature allows users to know what are the approvals they have set to third parties. In this sense, they will have more control on their assets.
 5. **Koinos System Authority**. Introduction of the new system call in Koinos to be able to classify accounts by type, in order to give safety to the users that don't have smart wallets and at the same time be able to call users' contracts to resolve authorities in case they use smart wallets.
 
 ## Allowance and check authority
