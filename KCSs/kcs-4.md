@@ -158,11 +158,6 @@ Returns a paginated list of allowances defined in an account.
 Protobuf definition:
 
 ```proto
-enum direction {
-   ascending = 0;
-   descending = 1;
-}
-
 message spender_value {
    bytes spender = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
@@ -173,7 +168,7 @@ message get_allowances_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes start = 2 [(koinos.btype) = ADDRESS];
    int32 limit = 3;
-   direction direction = 4;
+   bool descending = 4;
 }
 
 // Result
