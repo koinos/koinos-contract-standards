@@ -323,7 +323,8 @@ The method should emit `owner_event` upon success with the name `collections.own
 ```proto
 // Event
 message owner_event {
-   bytes value = 1 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
 }
 ```
 
@@ -513,7 +514,8 @@ The method should emit `burn_event` upon success with the name `collections.burn
 ```proto
 // Event
 message burn_event {
-   bytes token_id = 1 [(koinos.btype) = HEX];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
 }
 ```
 
