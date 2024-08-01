@@ -237,9 +237,9 @@ The method should emit `owner_event` upon success with the name `collections.own
 ```proto
 // Event
 message owner_event {
-   bytes value = 1 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
 }
-```
 
 #### set_royalties
 
@@ -264,8 +264,13 @@ The method should emit `royalties_event` upon success with the name `collections
 
 ```proto
 // Event
+message royalty_object {
+   uint64 amount = 1 [jstype = JS_STRING];
+   bytes address = 2 [(koinos.btype) = ADDRESS];
+}
+
 message royalties_event {
-   repeated royalty value = 1;
+   repeated royalty_object value = 1;
 }
 ```
 
@@ -377,7 +382,6 @@ message transfer_event {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   string memo = 4;
 }
 ```
 
@@ -401,7 +405,8 @@ The method should emit `burn_event` upon success with the name `collections.burn
 ```proto
 // Event
 message burn_event {
-   bytes token_id = 1 [(koinos.btype) = HEX];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
 }
 ```
 
