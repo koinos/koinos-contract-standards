@@ -79,24 +79,6 @@ message uri_result {
 }
 ```
 
-#### get_info (optional)
-
-Returns name, symbol, decimals, and description in a single call.
-
-Protobuf definition:
-
-```proto
-// Arguments
-message info_arguments {}
-// Result
-message info_results {
-   string name = 1;
-   string symbol = 2;
-   uint32 uri = 3;
-   string description = 4;
-};
-```
-
 #### owner
 
 Returns the owner of the collection.
@@ -252,6 +234,7 @@ message royalty {
    uint64 percentage = 1 [jstype = JS_STRING];
    bytes address = 2 [(koinos.btype) = ADDRESS];
 }
+
 // Arguments
 message set_royalties_argument {
    repeated royalty value = 1;
@@ -263,14 +246,14 @@ message set_royalties_result {}
 The method should emit `royalties_event` upon success with the name `collections.royalties_event`. The event should indicate the addresses of the royalties as impacted accounts.
 
 ```proto
-// Event
-message royalty_object {
-   uint64 amount = 1 [jstype = JS_STRING];
+message royalty {
+   uint64 percentage = 1 [jstype = JS_STRING];
    bytes address = 2 [(koinos.btype) = ADDRESS];
 }
 
+// Event
 message royalties_event {
-   repeated royalty_object value = 1;
+   repeated royalty value = 1;
 }
 ```
 
@@ -369,7 +352,6 @@ message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   string memo = 4;
 }
 message transfer_result {}
 ```
