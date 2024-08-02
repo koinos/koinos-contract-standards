@@ -66,6 +66,33 @@ message symbol_result {
 
 #### uri
 
+A universal resource identifier that is a link to metadata formatted in `JSON` for individual items within the collection (each NFT). This is usually an `https` or `ipfs` link. The URI is the base path and the individual metadata contained is at `/<item number>`. As an example, if `https://somekoinosexample.com/mycollection` were the URI, and the first token is the hex string representation of '1', then the 1st item's metadata would be located at `https://somekoinosexample.com/mycollection/0x31` and the 2nd would be at `/0x32` and so forth.
+
+This is one area where the implementation differs slightly from ERC-721. With ERC-721 a URI is set per-token, here it is set for the whole collection and the full path for a token's metadata is assumed based on the constructed path.
+
+The metadata should include at a minimum a name, description, and a URI where the associated image can be found. Other properties are arbitrary and can be any properties you deem fit for your collection. Attributes are also optional but will often be used.
+
+The JSON located at these URI's should follow this format (similar and compatible with ERC-721 format):
+
+```json
+{
+   "name":"Collection Nft #1",
+   "description":"The first of this collection",
+   "attributes":[
+      {
+         "trait_type":"Awesome",
+         "value":"Yes"
+      },
+      {
+         "trait_type":"Likes Standards",
+         "value":"Loves Them"
+      }
+   ],
+   "my_arbitrary_custom_property": "totally ok!",
+   "image":"https://somekoinosexample.com/mycollection/images/0.png"
+}
+```
+
 Returns the endpoint to resolve the metadata.
 
 Protobuf definition:
