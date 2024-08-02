@@ -32,15 +32,39 @@ In addition to having the ability to transfer ownership, having an `owner` means
 
 At a minimum, an NFT contract using this standard will include the following methods and unique data:
 
-### name
+### Read methods
 
-This simply returns the name of the collection.
+#### name
 
-### symbol
+Returns the name of the NFT. No arguments required.
 
-This returns a symbol representing this collection of tokens (NFTs).
+Protobuf definition:
 
-### uri
+```proto
+// Arguments
+message name_arguments {}
+// Result
+message name_result {
+   string value = 1;
+}
+```
+
+#### symbol
+
+Returns the symbol for the NFT. No arguments required.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message symbol_arguments {}
+// Result
+message symbol_result {
+   string value = 1;
+}
+```
+
+#### uri
 
 A universal resource identifier that is a link to metadata formatted in `JSON` for individual items within the collection (each NFT). This is usually an `https` or `ipfs` link. The URI is the base path and the individual metadata contained is at `/<item number>`. As an example, if `https://somekoinosexample.com/mycollection` were the URI, and the first token is the hex string representation of '1', then the 1st item's metadata would be located at `https://somekoinosexample.com/mycollection/0x31` and the 2nd would be at `/0x32` and so forth.
 
@@ -50,7 +74,7 @@ The metadata should include at a minimum a name, description, and a URI where th
 
 The JSON located at these URI's should follow this format (similar and compatible with ERC-721 format):
 
-```
+```json
 {
    "name":"Collection Nft #1",
    "description":"The first of this collection",
@@ -69,53 +93,331 @@ The JSON located at these URI's should follow this format (similar and compatibl
 }
 ```
 
-### total_supply
+Returns the endpoint to resolve the metadata.
 
-This method gets the current total supply of a collection.
+Protobuf definition:
 
-### royalties
+```proto
+// Arguments
+message uri_arguments {}
+// Result
+message uri_result {
+   string value = 1;
+}
+```
 
-This method returns the amount of royalties (if any).
+#### owner
 
-### set_royalties
+Returns the owner of the collection.
 
-This method allows the contract owner to set royalties (optional). The max allowed is 10% in this implementation.
+Protobuf definition:
 
-### owner
+```proto
+// Arguments
+message owner_arguments {}
+// Result
+message owner_result {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+```
 
-Returns current owner of the collection contract.
+#### total_supply
 
-### transfer_ownership
+Returns the total supply of the NFT collection.
 
-Allows updating the owner address of a collection contract.
+Protobuf definition:
 
-### balance_of
+```proto
+// Arguments
+message total_supply_arguments {}
+// Result
+message total_supply_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+```
 
-Returns how many tokens (NFTs) a specific address holds of this collection.
+#### royalties
 
-### get_approved
+Returns the royalties configuration.
 
-Returns if a specific token is approved for transfer
+Protobuf definition:
 
-### is_approved_for_all
+```proto
+message royalty {
+   uint64 percentage = 1 [jstype = JS_STRING];
+   bytes address = 2 [(koinos.btype) = ADDRESS];
+}
+// Arguments
+message royalties_arguments {}
+// Result
+message royalties_result {
+   repeated royalty value = 1;
+}
+```
 
-Checks if the entire collection is approved for transfer
+#### balance_of
 
-### mint
+Returns how many NFTs a specific address holds.
 
-This method is used by the contract owner to initially mint NFTs from this collection to new owners.
+Protobuf definition:
 
-### transfer
+```proto
+// Arguments
+message balance_of_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+}
+// Result
+message balance_of_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+```
 
-This will transfer tokens (NFTs) to a new owner if that token is approved for transfer. As part of the process it will clear the approval.
+#### owner_of
 
-### approve
+Returns the owner of a specific NFT.
 
-Updates the approval for transfer for a specific token (NFT).
+Protobuf definition:
 
-### set_approval_for_all
+```proto
+// Arguments
+message owner_of_arguments {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+}
+// Result
+message owner_of_result {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+```
 
-Updates the approval for transfer of the collection contract to a new owner
+#### get_approved
+
+Returns the account allowed to operate a specific NFT (apart from the owner).
+
+Protobuf definition:
+
+```proto
+// Arguments
+message get_approved_arguments {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+}
+// Result
+message get_approved_result {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+```
+
+#### is_approved_for_all
+
+Returns if an account is authorized to operate all NFTs of a specific owner.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message is_approved_for_all_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
+}
+// Return
+message is_approved_for_all_result {
+   bool value = 1;
+}
+```
+
+### Write methods
+
+#### transfer_ownership
+
+Function to transfer the ownership of the collection to other account. Only the owner of the collection can perform this operation.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message transfer_ownership_arguments {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+// Result
+message transfer_ownership_result {}
+```
+
+The method should emit `owner_event` upon success with the name `collections.owner_event`. The event should indicate the new owner and then the previous owner as impacted accounts.
+
+```proto
+// Event
+message owner_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+}
+
+#### set_royalties
+
+Function to set the royalties. Only the owner of the collection can perform this operation.
+
+Protobuf definition:
+
+```proto
+message royalty {
+   uint64 percentage = 1 [jstype = JS_STRING];
+   bytes address = 2 [(koinos.btype) = ADDRESS];
+}
+
+// Arguments
+message set_royalties_argument {
+   repeated royalty value = 1;
+}
+// Result
+message set_royalties_result {}
+```
+
+The method should emit `royalties_event` upon success with the name `collections.royalties_event`. The event should indicate the addresses of the royalties as impacted accounts.
+
+```proto
+message royalty {
+   uint64 percentage = 1 [jstype = JS_STRING];
+   bytes address = 2 [(koinos.btype) = ADDRESS];
+}
+
+// Event
+message royalties_event {
+   repeated royalty value = 1;
+}
+```
+
+#### approve
+
+Grant permissions to other account to manage the NFTs owned by the user.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message approve_arguments {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+}
+// Result
+message approve_result {}
+```
+
+The method should emit `token_approval_event` upon success with the name `collections.token_approval_event`. The event should indicate the approved address and then the approver address as impacted accounts.
+
+```proto
+// Event
+message token_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+}
+```
+
+#### set_approval_for_all
+
+Grant permissions to other account to manage all Tokens owned by the user.
+
+
+Protobuf definition:
+
+```proto
+// Arguments
+message set_approval_for_all_arguments {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bool approved = 3;
+}
+// Result
+message set_approval_for_all_result {}
+```
+
+The method should emit `operator_approval_event` upon success with the name `collections.operator_approval_event`. The event should indicate the operator address and then the approver address as impacted accounts.
+
+```proto
+// Event
+message operator_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bool approved = 3;
+}
+```
+
+#### mint
+
+Used by the contract owner to initially mint the NFT to a given address.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message mint_arguments {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
+}
+// Result
+message mint_result {}
+```
+
+The method should emit `mint_event` upon success with the name `collections.mint_event`. The event should indicate the recipient of the mint as an impacted account.
+
+```proto
+// Event
+message mint_event {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
+}
+```
+
+#### transfer
+
+This will transfer an NFT to a new owner. The authorization is checked using allowances and/or smart wallets as explained above.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message transfer_arguments {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+}
+message transfer_result {}
+```
+
+The method should emit `transfer_event` upon success with the name `collections.transfer_event`. The event should indicate the receiver and then the sender as impacted accounts.
+
+```proto
+// Event
+message transfer_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes token_id = 3 [(koinos.btype) = HEX];
+}
+```
+
+### burn (optional)
+
+Burns an amount of NFT from an address. The authorization is checked using allowances and/or smart wallets as explained above.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message burn_arguments {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+}
+// Result
+message burn_result {}
+```
+
+The method should emit `burn_event` upon success with the name `collections.burn_event`. The event should indicate the previous owner as an impacted account.
+
+```proto
+// Event
+message burn_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes token_id = 2 [(koinos.btype) = HEX];
+}
+```
 
 ## Expected Unique Data and Types
 
