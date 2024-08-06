@@ -249,6 +249,7 @@ message owner_event {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
 }
+```
 
 #### set_royalties
 
