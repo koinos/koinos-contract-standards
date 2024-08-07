@@ -174,7 +174,7 @@ message get_allowances_arguments {
 // Result
 message get_allowances_result {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
-   repeated spender_value allowances = 2;   
+   repeated spender_value allowances = 2;
 }
 ```
 
@@ -196,7 +196,7 @@ message mint_arguments {
 message mint_result {}
 ```
 
-The method should emit a `mint_event` upon success. The event should indicate the recipient of the mint as an impacted account.
+The method should emit a `mint_event` upon success. The event should indicate the recipient of the mint as an impacted account. The name of the event must be `token.mint_event`.
 
 ```proto
 // Event
@@ -224,7 +224,7 @@ message transfer_arguments {
 message transfer_result {}
 ```
 
-The transfer event should emit a `transfer_event` upon success. The event should indicate the receiver and then the sender as impacted accounts.
+The transfer event should emit a `transfer_event` upon success. The event should indicate the receiver and then the sender as impacted accounts. The name of the event must be `token.transfer_event`.
 
 ```proto
 // Event
@@ -252,7 +252,7 @@ message burn_arguments {
 message burn_result {}
 ```
 
-The method should emit a `burn_event` upon success. The event should indicate the source as an impacted account.
+The method should emit a `burn_event` upon success. The event should indicate the source as an impacted account. The name of the event must be `token.burn_event`.
 
 ```proto
 // Event
@@ -279,7 +279,7 @@ message approve_arguments {
 message approve_result {}
 ```
 
-The method should emit an `approve_event` upon success. The event should indicate the spender and then the owner as the impacted accounts.
+The method should emit an `approve_event` upon success. The event should indicate the spender and then the owner as the impacted accounts. The name of the event must be `token.approve_event`.
 
 ```proto
 // Event
