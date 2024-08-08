@@ -8,6 +8,8 @@ status: Pending
 
 A contract standard for tokens on the Koinos blockchain.
 
+> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and  "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+
 ## Long Description
 
 This standard is to define how tokens can work on the Koinos blockchain. The functionality is setup to closely mimic the [ERC-20](https://eips.ethereum.org/EIPS/eip-20) standard on Ethereum. At the same time, it supports the Koinos authority system, which is useful for smart wallets.
@@ -27,7 +29,7 @@ The function to verify authorizations is extended in this way:
 3. If there is a contract caller AND the owner doesn't have a contract to resolve authorizations then the operation is rejected.
 4. If the points above do not apply then use the native check authority function:
   a. If the owner has a smart contract to resolve authorizations then call it.
-  b. If the owner does not have a smart contract then check if the trasaction is signed by the owner.
+  b. If the owner does not have a smart contract then check if the transaction is signed by the owner.
 
 Consider the case where the owner uses a normal account (not smart wallet). If he interacts directly with the token contract then the signature will be validated (point 4.b). If he interacts with a DEX and the DEX makes a transfer in name of the owner then the allowance will be validated (point 1), otherwise it will be rejected (point 3). In this way allowances protect the assets of the users, because they have to set them in advance before a third contract tries to execute a transfer.
 
@@ -35,7 +37,9 @@ Now consider the case where the owner has a smart wallet. Consider also that he 
 
 ## Specification
 
-At a minimum, a token contract using this standard will include the following methods and unique data:
+At a minimum, a token contract using this standard must include the following methods and events. Some methods in this specification are optional and are documented accordingly.
+
+A token contract should check inputs and return meaningful error messages. For example, if a transfer argument does not contain one of the addresses should exit with a meaningful error message.
 
 ### Read methods
 
@@ -43,7 +47,7 @@ At a minimum, a token contract using this standard will include the following me
 
 Returns the name of the token. No arguments required.
 
-Protobuf definition
+Protobuf definition:
 
 ```proto
 // Arguments
@@ -58,7 +62,7 @@ message name_result {
 
 Returns the symbol for the token. No arguments required.
 
-Protobuf definition
+Protobuf definition:
 
 ```proto
 // Arguments
@@ -196,7 +200,7 @@ message mint_arguments {
 message mint_result {}
 ```
 
-The method should emit a `mint_event` upon success. The event should indicate the recipient of the mint as an impacted account. The name of the event must be `token.mint_event`.
+The method must emit a `mint_event` upon success. The event must indicate the recipient of the mint as an impacted account. The name of the event must be `token.mint_event`.
 
 ```proto
 // Event
@@ -208,7 +212,7 @@ message mint_event {
 
 #### transfer
 
-This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
+This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract. The transfer methods should not allow transfers to self.
 
 Protobuf definition:
 
@@ -224,7 +228,7 @@ message transfer_arguments {
 message transfer_result {}
 ```
 
-The transfer event should emit a `transfer_event` upon success. The event should indicate the receiver and then the sender as impacted accounts. The name of the event must be `token.transfer_event`.
+The transfer event must emit a `transfer_event` upon success. The event must indicate the receiver and then the sender as impacted accounts. The name of the event must be `token.transfer_event`.
 
 ```proto
 // Event
@@ -252,7 +256,7 @@ message burn_arguments {
 message burn_result {}
 ```
 
-The method should emit a `burn_event` upon success. The event should indicate the source as an impacted account. The name of the event must be `token.burn_event`.
+The method must emit a `burn_event` upon success. The event must indicate the source as an impacted account. The name of the event must be `token.burn_event`.
 
 ```proto
 // Event
@@ -279,7 +283,7 @@ message approve_arguments {
 message approve_result {}
 ```
 
-The method should emit an `approve_event` upon success. The event should indicate the spender and then the owner as the impacted accounts. The name of the event must be `token.approve_event`.
+The method must emit an `approve_event` upon success. The event must indicate the spender and then the owner as the impacted accounts. The name of the event must be `token.approve_event`.
 
 ```proto
 // Event
@@ -290,19 +294,17 @@ message approve_event {
 }
 ```
 
-## Expected Unique Data and Types
-
-With the proposed implementation developers would set the following constants before uploading their token contract:
-
-- `NAME` - a string for the human readable name of the token.
-- `SYMBOL` - a string for the symbol or ticker used for the token (all uppercase).
-- `DECIMALS` - a u32 for the decimal precision of the token.
-
 ## Implementation
 
 The implementation of this token contract can be found at:
 
 - [Token contract v1.0.2 - @koinosbox/contracts@v2.0.2](https://github.com/joticajulian/koinos-contracts-as/blob/v2.0.2/contracts/token/assembly/Token.ts) (check also latest updates).
+
+With this example implementation developers would set the following constants before uploading their token contract:
+
+- `NAME` - a string for the human readable name of the token.
+- `SYMBOL` - a string for the symbol or ticker used for the token (all uppercase).
+- `DECIMALS` - a u32 for the decimal precision of the token.
 
 ## References
 
