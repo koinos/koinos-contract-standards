@@ -22,6 +22,10 @@ The difficulty of merging both standards is because before 2024-02-12 there was 
 
 ## Allowance and check authority
 
+### Authorization
+
+Authorization is a key component of this standard. There is a more complex authority check that is used by most functions. For ease of implementation, the AS-SDK v1.2.0 and newer contains the function `System.checkAccountAuthority` which implements the new logic. By default
+
 The function to verify authorizations is extended in this way:
 
 1. Check if the caller of the operation is allowed to do it by checking the allowances.
@@ -35,11 +39,21 @@ Consider the case where the owner uses a normal account (not smart wallet). If h
 
 Now consider the case where the owner has a smart wallet. Consider also that he does not set any allowance in the token contract. If he interacts directly with the token contract then the smart wallet will be called (point 4.a). If he interacts with a DEX and the DEX makes a transfer in name of the owner then the smart wallet will be called as well (point 4.a). This means that the token contract supports the Koinos authority system, which is useful for smart wallets.
 
+This authorization is required for `transfer` and `burn`. Steps 2-4 are required for `approve`. For ease of implementation, the AS-SDK v1.2.0 and newer contains the function `System.checkAccountAuthority` which implements steps 2-4 outlines above. In addition, the existing function `System.requireAuthority` has an additional parameter for enhanced security that will call `checkAccountAuthority`. By default, `requireAuthority` will use the enhanced security, so any contract already using `requireAuthority` can take advantage of the improved security outlined above by simply upgrading their SDK version.
+
 ## Specification
 
 At a minimum, a token contract using this standard must include the following methods and events. Some methods in this specification are optional and are documented accordingly.
 
 A token contract should check inputs and return meaningful error messages. For example, if a transfer argument does not contain one of the addresses should exit with a meaningful error message.
+
+### Memos
+
+Some functions allow for user specified memos. These are `mint`, `transfer`, `burn`, and `approve`. For the purposes of this specification, they are not intended for internal use by a token, but are there for protocols external to the blockchain to take advantage of. Please follow these guidelines for all `memo` fields.
+
+The memo field is optional for the user, but must be supported by the contract. The contents of the memo must not be error checked as the contents could include non-ASCII characters such as Unicode for international messages or the entire byte range for encrypted/encoded messages.
+
+If a user provides a memo, it must be included in the corresponding event (e.g. If a memo is present on `transfer_arguments` it must be present on the corresponding `transfer_event` if the transfer succeeds).
 
 ### Read methods
 
@@ -186,7 +200,7 @@ message get_allowances_result {
 
 #### mint
 
-Used by the contract owner to initially mint the token to a given address.
+Used by the contract owner to initially mint the token to a given address. Authorization of the mint function is left up to the developer. Most contracts will require the contract itself to authorize (sign with the key associated with the contract) or delegate to another address that is either another contract or an address the developer controls.
 
 Protobuf definition:
 
@@ -195,6 +209,7 @@ Protobuf definition:
 message mint_arguments {
    bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
+   optional string memo = 3;
 }
 // Result
 message mint_result {}
@@ -207,12 +222,13 @@ The method must emit a `mint_event` upon success. The event must indicate the re
 message mint_event {
    bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
+   optional string memo = 3;
 }
 ```
 
 #### transfer
 
-This will transfer tokens to a new owner. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract. The transfer methods should not allow transfers to self.
+This will transfer tokens to a new owner. Transfer is authorized by the improved authority outlined [above](#authorization).
 
 Protobuf definition:
 
@@ -222,13 +238,13 @@ message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
-   string memo = 4;
+   optional string memo = 4;
 }
 // Result
 message transfer_result {}
 ```
 
-The transfer event must emit a `transfer_event` upon success. The event must indicate the receiver and then the sender as impacted accounts. The name of the event must be `token.transfer_event`.
+The transfer event must emit a `transfer_event` upon success. The event must indicate the receiver and then the sender as impacted accounts. The name of the event must be `token.transfer_event`. If a memo is provided by the user, it must be included in the event.
 
 ```proto
 // Event
@@ -236,13 +252,13 @@ message transfer_event {
    bytes from = 1 [(btype) = ADDRESS];
    bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
-   string memo = 4;
+   optional string memo = 4;
 }
 ```
 
 #### burn (optional)
 
-Burns an amount of token from an address. The authorization is checked with the native `check_authority` system call. It is also authorized if the contract of `from` is the one that called the token contract.
+Burns an amount of token from an address. Burn is authorized by the improved authority outlined [above](#authorization).
 
 Protobuf definition:
 
@@ -251,6 +267,7 @@ Protobuf definition:
 message burn_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
+   optional string memo = 3;
 }
 // Result
 message burn_result {}
@@ -263,12 +280,13 @@ The method must emit a `burn_event` upon success. The event must indicate the so
 message burn_event {
    bytes from = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
+   optional string memo = 3;
 }
 ```
 
 #### approve
 
-Grant permissions to other account to manage the tokens owned by the user.
+Grant permissions to other account to manage the tokens owned by the user. Approve is authorized by the improved authority outlined [above](#authorization).
 
 Protobuf definition:
 
@@ -278,6 +296,7 @@ message approve_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes spender = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   optional string memo = 4;
 }
 // Result
 message approve_result {}
@@ -291,8 +310,13 @@ message approve_event {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes spender = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   optional string memo = 4;
 }
 ```
+
+#### authorize (optional)
+
+Optionally, token contracts can implement an authorize override that defaults to System authority using `System.checkSystemAuthority`. This allows any tokens inadvertently sent to the token contract itself to be retrieved and sent to their rightful owner via a governance proposal.
 
 ## Implementation
 
