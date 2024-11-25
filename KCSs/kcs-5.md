@@ -8,6 +8,8 @@ status: Pending
 
 A contract standard for NFT collections on the Koinos blockchain.
 
+> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
+
 ## Long Description
 
 This standard is to define how NFT collections can work on the Koinos blockchain. The functionality mimic the [ERC-721](https://eips.ethereum.org/EIPS/eip-721) standard on Ethereum and extend it with new features. At the same time, it supports the Koinos authority system, which is useful for smart wallets.
@@ -16,11 +18,10 @@ This standard is to define how NFT collections can work on the Koinos blockchain
 
 This standard introduces new features with respect to the standard KCS-2. Here is a summary of the principal changes:
 
-1. **Possibility to store metadata onchain**. When the `uri` is defined then the metadata is stored offchain. However, if the `uri` is undefined is because the metadata should be obtained from the contract itself, onchain. Thanks to this option, the developers don't have to setup an API for the contract.
-2. **Function to get a paginated list of NFTs**. One of the main barriers of the ERC-721 and KCS-2 is that it's not possible know what is the list of NFTs in the collection, unless you setup a microservice that listen changes in the contract, or you rely in third parties offering this functionality.
-3. **Function to get NFTs by owner**. Same feature as the previous one but filtered by owner.
-4. **Function to list approvals**. This feature allows users to know what are the approvals they have set to third parties. In this sense, they will have more control on their assets.
-5. **Koinos System Authority**. Introduction of the new system call in Koinos to be able to classify accounts by type, in order to give safety to the users that don't have smart wallets and at the same time be able to call users' contracts to resolve authorities in case they use smart wallets.
+1. **Possibility to store metadata onchain**. When the `uri` is defined then the metadata is stored off-chain. However, if the `uri` is undefined the metadata must be obtained from onchain from `metadata_of`. Thanks to this option, the developers don't have to setup an API for the contract.
+2. **Function to get a paginated list of NFTs**. One of the main barriers of the ERC-721 and KCS-2 is that it's not possible know what is the list of NFTs in the collection, unless you setup a microservice that listen changes in the contract, or you rely in third parties offering this functionality. KCS-5 adds the paginated `get_tokens` and `get_tokens_by_owner` calls.
+3. **Function to list approvals**. This feature allows users to know what are the approvals they have set to third parties. In this sense, they will have more control on their assets.
+4. **Koinos System Authority**. Introduction of the new system call in Koinos to be able to classify accounts by type, in order to give safety to the users that don't have smart wallets and at the same time be able to call users' contracts to resolve authorities in case they use smart wallets.
 
 ## Allowance and check authority
 
@@ -75,7 +76,7 @@ message symbol_result {
 
 #### uri
 
-Returns the endpoint to resolve the metadata. If the uri is empty then the metadata should be searched onchain by using the method `metadata_of`.
+Returns the endpoint to resolve the metadata. If the uri is empty then `metadata_of` must return the metadata of the NFT.
 
 Protobuf definition:
 
@@ -96,9 +97,9 @@ Protobuf definition:
 
 ```proto
 // Arguments
-message info_arguments {}
+message get_info_arguments {}
 // Result
-message info_results {
+message get_info_results {
    string name = 1;
    string symbol = 2;
    uint32 uri = 3;
@@ -191,7 +192,7 @@ message owner_of_result {
 
 #### metadata_of
 
-Returns the metadata of a specific NFT.
+Returns the metadata of a specific NFT. If the metadata is empty then `URIf` must return and endpoint to retrieve the metadata.
 
 Protobuf definition:
 
