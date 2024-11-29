@@ -395,6 +395,7 @@ message approve_arguments {
    bytes approver_address = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
+   optional string memo = 4;
 }
 // Result
 message approve_result {}
@@ -408,6 +409,7 @@ message token_approval_event {
    bytes approver_address = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
+   optional string memo = 4; 
 }
 ```
 
@@ -424,6 +426,7 @@ message set_approval_for_all_arguments {
    bytes approver_address = 1 [(koinos.btype) = ADDRESS];
    bytes operator_address = 2 [(koinos.btype) = ADDRESS];
    bool approved = 3;
+   optional string memo = 4;
 }
 // Result
 message set_approval_for_all_result {}
@@ -437,6 +440,7 @@ message operator_approval_event {
    bytes approver_address = 1 [(koinos.btype) = ADDRESS];
    bytes operator_address = 2 [(koinos.btype) = ADDRESS];
    bool approved = 3;
+   optional string memo = 4;
 }
 ```
 
@@ -451,6 +455,7 @@ Protobuf definition:
 message mint_arguments {
    bytes to = 1 [(koinos.btype) = ADDRESS];
    bytes token_id = 2 [(koinos.btype) = HEX];
+   optional string memo = 3;
 }
 // Result
 message mint_result {}
@@ -463,6 +468,7 @@ The method should emit `mint_event` upon success with the name `collections.mint
 message mint_event {
    bytes to = 1 [(koinos.btype) = ADDRESS];
    bytes token_id = 2 [(koinos.btype) = HEX];
+   optional string memo = 3;
 }
 ```
 
@@ -478,7 +484,7 @@ message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   string memo = 4;
+   optional string memo = 4;
 }
 message transfer_result {}
 ```
@@ -491,7 +497,7 @@ message transfer_event {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   string memo = 4;
+   optional string memo = 4;
 }
 ```
 
@@ -505,6 +511,7 @@ Protobuf definition:
 // Arguments
 message burn_arguments {
    bytes token_id = 1 [(koinos.btype) = HEX];
+   optional string memo = 2;
 }
 // Result
 message burn_result {}
@@ -517,6 +524,7 @@ The method should emit `burn_event` upon success with the name `collections.burn
 message burn_event {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes token_id = 2 [(koinos.btype) = HEX];
+   optional string memo = 3;
 }
 ```
 
