@@ -18,7 +18,7 @@ This standard is to define how NFT collections can work on the Koinos blockchain
 
 This standard introduces new features with respect to the standard KCS-2. Here is a summary of the principal changes:
 
-1. **Possibility to store metadata onchain**. When the `uri` is defined then the metadata is stored off-chain. However, if the `uri` is undefined the metadata must be obtained from onchain from `metadata_of`. Thanks to this option, the developers don't have to setup an API for the contract.
+1. **Possibility to store metadata onchain**. When the `uri` is defined or `token_uri` endpoint is used then the metadata is stored off-chain. However, if the `uri` is undefined and `token_uri` endpoint does not exist the metadata must be obtained from onchain from `metadata_of`. Thanks to this option, the developers don't have to setup an API for the contract.
 2. **Function to get a paginated list of NFTs**. One of the main barriers of the ERC-721 and KCS-2 is that it's not possible know what is the list of NFTs in the collection, unless you setup a microservice that listen changes in the contract, or you rely in third parties offering this functionality. KCS-5 adds the paginated `get_tokens` and `get_tokens_by_owner` calls.
 3. **Function to list approvals**. This feature allows users to know what are the approvals they have set to third parties. In this sense, they will have more control on their assets.
 4. **Koinos System Authority**. Introduction of the new system call in Koinos to be able to classify accounts by type, in order to give safety to the users that don't have smart wallets and at the same time be able to call users' contracts to resolve authorities in case they use smart wallets.
@@ -76,7 +76,7 @@ message symbol_result {
 
 #### uri
 
-Returns the endpoint to resolve the metadata. If the uri is empty then `metadata_of` must return the metadata of the NFT.
+Returns the endpoint to resolve the metadata. If the uri is empty and `token_uri` is not used then `metadata_of` must return the metadata of the NFT.
 
 Protobuf definition:
 
@@ -85,6 +85,23 @@ Protobuf definition:
 message uri_arguments {}
 // Result
 message uri_result {
+   string value = 1;
+}
+```
+
+#### token_uri
+
+Returns the endpoint for an individual token to resolve the metadata. If the uri is empty and `token_uri` is not used then `metadata_of` must return the metadata of the NFT.
+
+Protobuf definition:
+
+```proto
+// Arguments
+message token_uri_arguments {
+   bytes token_id = 1 [(koinos.btype) = HEX];
+}
+// Result
+message token_uri_result {
    string value = 1;
 }
 ```
@@ -192,7 +209,7 @@ message owner_of_result {
 
 #### metadata_of
 
-Returns the metadata of a specific NFT. If the metadata is empty then `URIf` must return and endpoint to retrieve the metadata.
+Returns the metadata of a specific NFT. If the metadata is empty then `URI` must return an endpoint to retrieve the metadata.
 
 Protobuf definition:
 
