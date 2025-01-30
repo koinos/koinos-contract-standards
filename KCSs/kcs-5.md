@@ -263,6 +263,7 @@ message get_approved_arguments {
 // Result
 message get_approved_result {
    bytes value = 1 [(koinos.btype) = ADDRESS];
+   repeated bytes values = 2 [(koinos.btype) = ADDRESS];
 }
 ```
 
