@@ -99,7 +99,7 @@ Protobuf definition:
 // Arguments
 message get_info_arguments {}
 // Result
-message get_info_results {
+message get_info_result {
    string name = 1;
    string symbol = 2;
    uint32 uri = 3;
