@@ -267,7 +267,7 @@ message get_approved_result {
 }
 ```
 
-This is a paginated API, but to support backwards compatibility, it should behave in the following way. When the limit is greater than 1, `start` is not inclusive. This allows you to start at "0x00" and use the last token from the previous call as the next `start` and get all tokens without overlap. However, when the limit is 1, `start` should be inclusive, allowing for direct lookup.
+This is a paginated API, but to support backwards compatibility, it should behave in the following way. For KCS-2, `start`, `limit`, and `descending` are not present. The contract must detect this scenario and in that case return the first address in the `value` field.
 
 Single token approvals can be handled in one of two ways. In KCS-2, a token could only have one address approved at a time (separate from addresses approved for all tokens). KCS-5 can continue working in this way, but can also support multiple approvals per token. If multiple approvals per token are allowed then then the first value should be sent in the `value` field and the entire result can be returned in `values`.
 
