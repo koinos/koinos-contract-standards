@@ -321,7 +321,7 @@ Protobuf definition:
 ```proto
 // Arguments
 message transfer_ownership_arguments {
-   bytes value = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 1 [(koinos.btype) = ADDRESS];
 }
 // Result
 message transfer_ownership_result {}
