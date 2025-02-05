@@ -116,7 +116,7 @@ Protobuf definition:
 // Arguments
 message get_info_arguments {}
 // Result
-message get_info_results {
+message get_info_result {
    string name = 1;
    string symbol = 2;
    uint32 uri = 3;
@@ -273,12 +273,20 @@ Protobuf definition:
 // Arguments
 message get_approved_arguments {
    bytes token_id = 1 [(koinos.btype) = HEX];
+   bytes start = 2 [(koinos.btype) = ADDRESS];
+   uint32 limit = 3;
+   bool descending = 4;
 }
 // Result
 message get_approved_result {
    bytes value = 1 [(koinos.btype) = ADDRESS];
+   repeated bytes values = 2 [(koinos.btype) = ADDRESS];
 }
 ```
+
+This is a paginated API, but to support backwards compatibility, it should behave in the following way. For KCS-2, `start`, `limit`, and `descending` are not present. The contract must detect this scenario and in that case return the first address in the `value` field.
+
+Single token approvals can be handled in one of two ways. In KCS-2, a token could only have one address approved at a time (separate from addresses approved for all tokens). KCS-5 can continue working in this way, but can also support multiple approvals per token. If multiple approvals per token are allowed then then the first value should be sent in the `value` field and the entire result can be returned in `values`.
 
 #### is_approved_for_all
 
@@ -330,7 +338,7 @@ Protobuf definition:
 ```proto
 // Arguments
 message transfer_ownership_arguments {
-   bytes value = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 1 [(koinos.btype) = ADDRESS];
 }
 // Result
 message transfer_ownership_result {}
@@ -409,24 +417,30 @@ Protobuf definition:
 ```proto
 // Arguments
 message approve_arguments {
-   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes owner = 1 [(koinos.btype) = ADDRESS, deprecated = true];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
    optional string memo = 4;
+   optional bool approve = 5;
 }
 // Result
 message approve_result {}
 ```
 
-The method should emit `token_approval_event` upon success with the name `collections.token_approval_event`. The event should indicate the approved address and then the approver address as impacted accounts.
+The method should emit `token_approval_event` upon success with the name `collections.token_approval_event`. The event should indicate the approved address and then the owner address as impacted accounts.
+
+The `owner` field is deprecated, but present to preserve wire compatibility with KCS-2. When interacting with KCS-5, a user may choose to ignore the field, but if not and the owner does not match the token owner, an error MUST be returned regardless of whether the actual owner authorized the transaction.
+
+The `approve` field is optional because KCS-2 implies approval using this method. Because it is optional, `approve` can be one of three states, true, false, and not set. If not set, then the operation should be treated as if `approve` was set to true.
 
 ```proto
 // Event
 message token_approval_event {
-   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
-   optional string memo = 4; 
+   optional string memo = 4;
+   optional bool approve = 5;
 }
 ```
 
@@ -440,8 +454,8 @@ Protobuf definition:
 ```proto
 // Arguments
 message set_approval_for_all_arguments {
-   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
-   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
    bool approved = 3;
    optional string memo = 4;
 }
@@ -449,13 +463,13 @@ message set_approval_for_all_arguments {
 message set_approval_for_all_result {}
 ```
 
-The method should emit `operator_approval_event` upon success with the name `collections.operator_approval_event`. The event should indicate the operator address and then the approver address as impacted accounts.
+The method should emit `operator_approval_event` upon success with the name `collections.operator_approval_event`. The event should indicate the operator address and then the owner address as impacted accounts.
 
 ```proto
 // Event
 message operator_approval_event {
-   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
-   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
    bool approved = 3;
    optional string memo = 4;
 }
@@ -498,7 +512,7 @@ Protobuf definition:
 ```proto
 // Arguments
 message transfer_arguments {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS, deprecated = true];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    bytes token_id = 3 [(koinos.btype) = HEX];
    optional string memo = 4;
@@ -507,6 +521,8 @@ message transfer_result {}
 ```
 
 The method should emit `transfer_event` upon success with the name `collections.transfer_event`. The event should indicate the receiver and then the sender as impacted accounts.
+
+The `from` field is deprecated, but present to preserve wire compatibility with KCS-2. When using KCS-5, the user may choose to ignore the field, but if not and the owner does not match the token owner, an error must be returned regardless of whether the actual owner authorized the transaction.
 
 ```proto
 // Event
